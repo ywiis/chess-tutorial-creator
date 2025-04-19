@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>منشئ دروس الشطرنج</title>
+    <!-- مكتبات الشطرنج -->
+    <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- إضافة CSS للتأثيرات الانتقالية -->
+    <link rel="stylesheet" href="css/transitions.css">
+    <!-- إضافة Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+</head>
+<body>
+    <!-- إضافة مؤشر تحميل بسيط -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <div class="loading-text">جاري التحميل...</div>
+    </div>
+
+    <!-- قسم تسجيل الدخول -->
+    <div id="auth-container" class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h2>منشئ دروس الشطرنج</h2>
+                <h3 id="auth-title">تسجيل الدخول</h3>
+            </div>
+            <div class="auth-body">
+                <form id="auth-form">
+                    <div class="form-group">
+                        <label for="auth-email">البريد الإلكتروني</label>
+                        <input type="email" class="form-input" id="auth-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="auth-password">كلمة المرور</label>
+                        <input type="password" class="form-input" id="auth-password" required>
+                    </div>
+                    <div class="auth-note">
+                        <!-- <p>سيتم تسجيل الدخول إذا كان لديك حساب، أو إنشاء حساب جديد تلقائياً إذا لم يكن لديك حساب</p> -->
+                    </div>
+                    <div class="auth-actions">
+                        <button type="submit" id="login-btn" class="btn primary">تسجيل الدخول</button> 
+                        <button type="button" id="signup-btn" class="btn secondary">إنشاء حساب جديد</button> 
+                    </div>
+                    <div id="auth-message" class="auth-message"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-container" class="app-container" style="display: none;">
+        <!-- شريط التنقل -->
+        <nav class="navbar">
+            <div class="logo">منشئ دروس الشطرنج</div>
+            <div class="nav-tabs">
+                <button class="tab-btn active" data-tab="editor">المحرر</button>
+                <button class="tab-btn" data-tab="lessons">الدروس المحفوظة</button>
+            </div>
+            <div class="user-menu">
+                <span id="user-info">مرحباً</span>
+                <button id="logout-btn" class="btn small">تسجيل الخروج</button>
+            </div>
+        </nav>
+
+        <!-- قسم المحرر -->
+        <div class="tab-content active" id="editor-tab">
+            <div class="editor-container">
+                <div class="left-panel">
+                    <h2>لوحة الشطرنج</h2>
+                    <div id="editor-board" class="chess-board"></div>
+                    <div class="board-controls">
+                        <button id="flip-board">تدوير اللوحة</button>
+                        <button id="reset-board">إعادة ضبط</button>
+                    </div>
+                    <div class="current-move">
+                        <h3>الحركة الحالية</h3>
+                        <div id="current-move-display">لم يتم تحديد حركة بعد</div>
+                    </div>
+                </div>
+                <div class="right-panel">
+                    <div class="lesson-details">
+                        <h2>تفاصيل الدرس</h2>
+                        <div class="lesson-header">
+                            <input type="text" id="lesson-title" placeholder="عنوان الدرس" class="form-input">
+                            <button id="new-lesson-btn" class="btn secondary">درس جديد</button>
+                        </div>
+                    </div>
+                    <div class="full-lesson-text">
+                        <h2>نص الشرح الكامل</h2>
+                        <div class="rich-text-controls">
+                            <button id="mark-move-btn" class="btn primary">تحديد حركة</button>
+                            <button id="unmark-move-btn" class="btn secondary">إلغاء تحديد</button>
+                        </div>
+                        <div contenteditable="true" id="full-lesson-text" class="form-input rich-text" placeholder="أضف النص الكامل للدرس هنا..."></div>
+                    </div>
+                    <div class="step-editor">
+                        <h2>محرر الخطوة</h2>
+                        <div class="step-details">
+                            <div id="current-selection" class="selection-display">لا يوجد نص محدد</div>
+                            <textarea id="step-explanation" placeholder="أضف شرحًا إضافيًا للخطوة (اختياري)" class="form-input"></textarea>
+                            <div class="step-type-selection">
+                                <label><input type="checkbox" id="phantom-step"> خطوة وهمية (للشرح فقط)</label>
+                                <span class="tooltip">الخطوات الوهمية تستخدم لتوضيح الخطوات الخاطئة أو البديلة وليست جزءاً من التسلسل الرئيسي</span>
+                            </div>
+                        </div>
+                        <button id="add-step" class="btn primary">إضافة الخطوة</button>
+                    </div>
+                    <div class="steps-list">
+                        <h2>الخطوات المضافة</h2>
+                        <div class="moves-table-container">
+                            <table id="steps-table" class="moves-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>الأبيض</th>
+                                        <th>الأسود</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="steps-container">
+                                    <!-- هنا سيتم إضافة الخطوات -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="lesson-actions">
+                        <button id="save-lesson" class="btn success">حفظ الدرس</button>
+                        <button id="preview-lesson" class="btn secondary">معاينة الدرس</button>
+                        <button id="export-lesson" class="btn secondary">تصدير</button>
+                        <input type="file" id="import-lessons" accept=".json" style="display: none;">
+                        <button id="import-btn" class="btn secondary">استيراد</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- قسم الدروس المحفوظة -->
+        <div class="tab-content" id="lessons-tab">
+            <h2>الدروس المحفوظة</h2>
+            <div id="admin-controls" class="admin-controls" style="display: none;">
+                <h3>لوحة تحكم المسؤول</h3>
+                <div class="admin-actions">
+                    <button id="all-lessons-btn" class="btn secondary">عرض جميع الدروس</button>
+                    <button id="manage-users-btn" class="btn secondary">إدارة المستخدمين</button>
+                </div>
+            </div>
+            <div id="lessons-container" class="lessons-container">
+                <!-- هنا سيتم عرض الدروس المحفوظة -->
+            </div>
+        </div>
+
+        <!-- قسم عرض الدرس -->
+        <div class="tab-content" id="viewer-tab">
+            <div class="viewer-container">
+                <button id="back-btn" class="btn secondary">العودة</button>
+                <h2 id="viewer-title">عنوان الدرس</h2>
+                <div class="viewer-content">
+                    <div class="left-panel">
+                        <div id="viewer-board" class="chess-board"></div>
+                        <div class="viewer-controls">
+                            <button id="prev-step">السابق</button>
+                            <button id="next-step">التالي</button>
+                        </div>
+                    </div>
+                    <div class="right-panel">
+                        <div class="explanation-panel">
+                            <h3>الشرح</h3>
+                            <div id="full-text-display" class="full-text-display"></div>
+                            <div class="scroll-indicator">اسحب لأسفل لقراءة المزيد</div>
+                            <div id="step-explanation-display" class="explanation-text"></div>
+                        </div>
+                        <div class="steps-list">
+                            <h3>الخطوات</h3>
+                            <div class="moves-table-container">
+                                <table id="viewer-steps-table" class="moves-table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>الأبيض</th>
+                                            <th>الأسود</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="viewer-steps">
+                                        <!-- هنا سيتم عرض الخطوات -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- المكتبات والسكريبتات -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+    <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <!-- إضافة سكريبت مدير الصفحات -->
+    <script src="js/page-manager.js"></script>
+    <script src="js/app.js"></script>
+    
+    <!-- سكريبت لتحسين تجربة المستخدم على الأجهزة المحمولة -->
+    <script>
+        // تحسين تجربة الشاشات اللمسية والتدوير
+        document.addEventListener('DOMContentLoaded', function() {
+            // معرفة ما إذا كان الجهاز يستخدم شاشة لمس
+            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+            
+            if (isTouchDevice) {
+                document.body.classList.add('touch-device');
+                
+                // تحسين النقر على الأزرار باللمس
+                const allButtons = document.querySelectorAll('button');
+                allButtons.forEach(button => {
+                    button.addEventListener('touchstart', function() {
+                        this.classList.add('touch-active');
+                    });
+                    button.addEventListener('touchend', function() {
+                        this.classList.remove('touch-active');
+                    });
+                });
+                
+                // إعادة تحجيم لوحات الشطرنج عند تدوير الشاشة
+                window.addEventListener('resize', function() {
+                    // إعادة تحجيم اللوحات بعد تأخير قصير للسماح بإتمام التدوير
+                    setTimeout(() => {
+                        // تهيئة لوحة المحرر إذا كانت موجودة
+                        if (typeof editorBoard !== 'undefined' && editorBoard && typeof editorBoard.resize === 'function') {
+                            editorBoard.resize();
+                        }
+                        
+                        // تهيئة لوحة العارض إذا كانت موجودة
+                        if (typeof viewerBoard !== 'undefined' && viewerBoard && typeof viewerBoard.resize === 'function') {
+                            viewerBoard.resize();
+                        }
+                    }, 300);
+                });
+                
+                // تحسين أحداث اللمس على لوحة الشطرنج
+                document.addEventListener('touchstart', function(e) {
+                    if (e.target.closest('.chess-board')) {
+                        // منع التكبير عند اللمس المزدوج على لوحة الشطرنج
+                        e.preventDefault();
+                    }
+                }, { passive: false });
+            }
+        });
+    </script>
+</body>
+</html>

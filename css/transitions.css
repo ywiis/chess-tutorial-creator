@@ -1,0 +1,101 @@
+/* css/transitions.css */
+.fade-in {
+    animation: fadeIn 0.4s cubic-bezier(0.39, 0.575, 0.565, 1);
+}
+
+.fade-out {
+    animation: fadeOut 0.4s cubic-bezier(0.39, 0.575, 0.565, 1);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(-15px); }
+}
+
+/* Apply transition to the containers that will fade */
+#auth-container, #editor-tab, #lessons-tab, #viewer-tab {
+    /* Ensure display is handled by JS, but transition opacity/transform */
+    transition: opacity 0.4s cubic-bezier(0.39, 0.575, 0.565, 1), 
+                transform 0.4s cubic-bezier(0.39, 0.575, 0.565, 1);
+    will-change: opacity, transform; /* Optimize animation */
+}
+
+/* Add transition to tab content if needed, though fading the parent might be enough */
+.tab-content {
+    transition: all 0.4s cubic-bezier(0.39, 0.575, 0.565, 1);
+}
+
+/* Loading Overlay Styles */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(247, 249, 252, 0.85);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+    backdrop-filter: blur(3px);
+}
+
+.loading-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid rgba(30, 58, 95, 0.1);
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.loading-text {
+    margin-top: 18px;
+    font-size: 16px;
+    color: var(--primary-color);
+    font-weight: 500;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* تأثيرات كروت الدروس والعناصر الأخرى */
+.lesson-card {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                box-shadow 0.3s ease,
+                border-color 0.3s ease;
+}
+
+.btn {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                background-color 0.3s ease,
+                box-shadow 0.3s ease;
+}
+
+/* تأثير النقر */
+.btn:active {
+    transform: scale(0.96);
+}

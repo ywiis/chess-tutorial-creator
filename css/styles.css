@@ -1,0 +1,1695 @@
+/* ===== أساسيات التنسيق ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    -webkit-tap-highlight-color: transparent; /* منع تأثير النقر المرئي على الأجهزة اللمسية */
+}
+
+:root {
+    /* تحويل قيم الألوان إلى RGB للاستخدام في الشفافية */
+    --primary-color-rgb: 30, 58, 95;
+    --secondary-color-rgb: 199, 81, 70;
+    --accent-color-rgb: 74, 144, 226;
+    --dark-text-rgb: 44, 62, 80;
+    
+    /* نظام ألوان محدث - مجموعة ألوان احترافية */
+    --primary-color: #1E3A5F;      /* أزرق داكن احترافي للعناصر الرئيسية */
+    --secondary-color: #C75146;    /* أحمر جميل للتنبيهات والعناصر الثانوية */
+    --accent-color: #4A90E2;       /* أزرق فاتح للعناصر البارزة */
+    --light-bg: #F7F9FC;           /* خلفية أفتح مع لمسة زرقاء */
+    --dark-text: #2C3E50;          /* نص غامق مائل للأزرق */
+    --light-text: #FFFFFF;         /* نص أبيض */
+    --border-color: #E1E8ED;       /* لون حدود فاتح مائل للرمادي */
+    --success-color: #3E9A52;      /* أخضر أكثر احترافية */
+    --warning-color: #F2C94C;      /* أصفر تحذيري */
+    --error-color: #E74C3C;        /* أحمر للأخطاء */
+    --white-square: #F0D9B5;       /* مربع أبيض لوح الشطرنج */
+    --black-square: #B58863;       /* مربع أسود لوح الشطرنج */
+    --highlight: #FFEEA3;          /* تظليل أصفر فاتح */
+    
+    /* ظلال وتأثيرات */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+    
+    /* انتقالات */
+    --transition-fast: 0.2s;
+    --transition-normal: 0.3s;
+    --transition-slow: 0.5s;
+}
+
+body {
+    background-color: var(--light-bg);
+    color: var(--dark-text);
+    line-height: 1.6;
+}
+
+.app-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* ===== شريط التنقل ===== */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to right, var(--primary-color), #2d4f7c);
+    color: var(--light-text);
+    padding: 15px 25px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    box-shadow: var(--shadow-md);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 1.6rem;
+    font-weight: bold;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo::before {
+    content: "♚";
+    font-size: 1.8rem;
+}
+
+.nav-tabs {
+    display: flex;
+    gap: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 5px;
+    border-radius: 6px;
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--light-text);
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    border-radius: 5px;
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.tab-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.tab-btn.active {
+    background-color: rgba(255, 255, 255, 0.25);
+    font-weight: bold;
+    box-shadow: var(--shadow-sm);
+}
+
+.tab-btn.active::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: var(--highlight);
+    border-radius: 3px 3px 0 0;
+}
+
+/* ===== محتوى التبويبات ===== */
+.tab-content {
+    display: none;
+    background-color: white;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 30px;
+    border: 1px solid var(--border-color);
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeInContent 0.5s ease-in-out;
+}
+
+@keyframes fadeInContent {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== تخطيط المحرر ===== */
+.editor-container, .viewer-content {
+    display: flex;
+    gap: 30px;
+}
+
+.left-panel, .right-panel {
+    flex: 1;
+}
+
+.left-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(var(--primary-color-rgb), 0.03);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: var(--shadow-sm);
+}
+
+.right-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* ===== لوحة الشطرنج ===== */
+.chess-board {
+    width: 450px;
+    height: 450px;
+    max-width: 100%;
+    margin: 0 auto 30px;
+    box-shadow: var(--shadow-lg);
+    border-radius: 5px;
+    display: block !important;
+    position: relative;
+    z-index: 10;
+    visibility: visible !important;
+    border: 10px solid #312e2b;
+    background-color: #312e2b;
+}
+
+/* ضمان ظهور الشطرنج حتى عند تغيير الحجم */
+@media (max-width: 500px) {
+    .chess-board {
+        width: 350px;
+        height: 350px;
+    }
+}
+
+@media (max-width: 400px) {
+    .chess-board {
+        width: 300px;
+        height: 300px;
+    }
+}
+
+/* تأكيد علي الصور */
+.chess-board img {
+    display: block !important;
+    max-width: 100%;
+}
+
+.chess-board::before {
+    content: "";
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    right: -20px;
+    bottom: -20px;
+    background: rgba(var(--primary-color-rgb), 0.03);
+    border-radius: 10px;
+    z-index: -1;
+}
+
+.board-controls, .viewer-controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 25px;
+    width: 100%;
+    max-width: 450px;
+    justify-content: center;
+}
+
+.board-controls button, .viewer-controls button {
+    padding: 10px 18px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all var(--transition-normal);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.board-controls button::before, .viewer-controls button::before {
+    content: "";
+    width: 16px;
+    height: 16px;
+    background-size: cover;
+    background-position: center;
+}
+
+#flip-board::before {
+    content: "↻";
+}
+
+#reset-board::before {
+    content: "↺";
+}
+
+#prev-step::before {
+    content: "←";
+}
+
+#next-step::before {
+    content: "→";
+}
+
+.board-controls button:hover, .viewer-controls button:hover {
+    background-color: var(--accent-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.current-move {
+    width: 100%;
+    max-width: 450px;
+    background-color: #f9f9f9;
+    border: 1px solid var(--border-color);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    box-shadow: var(--shadow-sm);
+    text-align: center;
+}
+
+#current-move-display {
+    padding: 10px;
+    font-weight: 600;
+    color: var(--primary-color);
+    font-size: 1.1rem;
+}
+
+/* ===== نماذج الإدخال ===== */
+.form-input {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: all var(--transition-fast);
+    background-color: #FAFBFC;
+    color: var(--dark-text);
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
+}
+
+.form-input::placeholder {
+    color: rgba(var(--dark-text-rgb), 0.4);
+}
+
+textarea.form-input {
+    min-height: 100px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* ===== الأزرار ===== */
+.btn {
+    padding: 10px 22px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-transform: none;
+    letter-spacing: 0.3px;
+}
+
+.btn::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: width var(--transition-normal);
+}
+
+.btn:hover::after {
+    width: 100%;
+}
+
+.primary {
+    background-color: var(--primary-color);
+    color: white;
+    box-shadow: 0 2px 4px rgba(30, 58, 95, 0.2);
+}
+
+.secondary {
+    background-color: #6c757d;
+    color: white;
+    box-shadow: 0 2px 4px rgba(108, 117, 125, 0.2);
+}
+
+.success {
+    background-color: var(--success-color);
+    color: white;
+    box-shadow: 0 2px 4px rgba(62, 154, 82, 0.2);
+}
+
+.warning {
+    background-color: var(--warning-color);
+    color: var(--dark-text);
+    box-shadow: 0 2px 4px rgba(242, 201, 76, 0.2);
+}
+
+.error {
+    background-color: var(--error-color);
+    color: white;
+    box-shadow: 0 2px 4px rgba(231, 76, 60, 0.2);
+}
+
+.outline {
+    background-color: transparent;
+    border: 2px solid currentColor;
+}
+
+.outline.primary {
+    color: var(--primary-color);
+    box-shadow: none;
+}
+
+.outline.secondary {
+    color: #6c757d;
+    box-shadow: none;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+/* ===== قائمة الخطوات ===== */
+.steps-container, .viewer-steps-list {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 10px;
+}
+
+.step-item {
+    padding: 10px;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.step-item:last-child {
+    border-bottom: none;
+}
+
+.step-item:hover {
+    background-color: #f5f5f5;
+}
+
+.step-item.active {
+    background-color: var(--highlight);
+}
+
+.step-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.step-actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: var(--primary-color);
+}
+
+.step-actions button:hover {
+    color: var(--secondary-color);
+}
+
+/* ===== قائمة الدروس ===== */
+.lessons-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+.lesson-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: var(--shadow-sm);
+    padding: 20px;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    border: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+}
+
+.lesson-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+}
+
+.lesson-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+}
+
+.lesson-card:hover::before {
+    opacity: 1;
+}
+
+.lesson-card h3 {
+    margin-bottom: 15px;
+    color: var(--primary-color);
+    font-size: 1.3rem;
+}
+
+.lesson-card .steps-count {
+    color: var(--dark-text);
+    opacity: 0.7;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.lesson-card .steps-count::before {
+    content: "♙";
+    font-size: 1.1rem;
+}
+
+.lesson-card .lesson-actions {
+    margin-top: 15px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* ===== عارض الدرس ===== */
+.viewer-container {
+    padding: 25px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: var(--shadow-md);
+}
+
+#back-btn {
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#back-btn::before {
+    content: "←";
+    font-size: 1.2rem;
+}
+
+.explanation-panel {
+    background-color: #f9f9fc;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: var(--shadow-sm);
+}
+
+.explanation-text {
+    background-color: white;
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    border-radius: 8px;
+    min-height: 180px;
+    line-height: 1.8;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+#viewer-title {
+    margin-bottom: 25px;
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#viewer-title::before {
+    content: "♚";
+    font-size: 1.8rem;
+    color: var(--primary-color);
+}
+
+/* ===== توافق الأجهزة ===== */
+@media (max-width: 992px) {
+    .app-container {
+        padding: 15px 10px;
+    }
+    
+    .navbar {
+        flex-wrap: wrap;
+        gap: 15px;
+        padding: 12px 15px;
+    }
+    
+    .nav-tabs {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .user-menu {
+        margin-right: 0;
+    }
+    
+    .tab-content {
+        padding: 20px 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .editor-container, .viewer-content {
+        flex-direction: column;
+    }
+    
+    .chess-board {
+        max-width: 100%;
+        height: auto !important;
+        width: 100% !important;
+        max-height: 70vh;
+        margin: 0 auto 15px auto;
+    }
+    
+    .left-panel, .right-panel {
+        width: 100%;
+        padding: 0;
+    }
+    
+    .auth-card {
+        max-width: 95%;
+        margin: 0 auto;
+    }
+    
+    .auth-body {
+        padding: 20px 15px;
+    }
+    
+    .auth-actions {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .lesson-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .tab-btn {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+    
+    .navbar {
+        padding: 10px;
+    }
+    
+    .logo {
+        font-size: 1.2rem;
+    }
+    
+    h2 {
+        font-size: 1.4rem;
+        margin-bottom: 12px;
+    }
+    
+    h3 {
+        font-size: 1.2rem;
+        margin-bottom: 8px;
+    }
+    
+    .auth-header h2 {
+        font-size: 1.5rem;
+    }
+    
+    .lesson-card {
+        padding: 15px;
+    }
+    
+    .rich-text {
+        padding: 15px;
+        min-height: 120px;
+    }
+    
+    .board-controls, .viewer-controls {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 10px 0;
+    }
+    
+    .board-controls button, .viewer-controls button {
+        flex: 1;
+        min-width: 100px;
+        min-height: 44px; /* Target size for touch interfaces */
+    }
+    
+    .moves-table {
+        font-size: 0.9rem;
+    }
+    
+    .moves-table th, .moves-table td {
+        padding: 8px 5px;
+    }
+    
+    .step-details {
+        margin-bottom: 15px;
+    }
+    
+    .form-input {
+        padding: 10px;
+    }
+    
+    .explanation-text {
+        min-height: 150px;
+    }
+    
+    #step-explanation {
+        min-height: 80px;
+    }
+    
+    .btn {
+        padding: 10px 15px;
+        min-height: 44px; /* Target size for touch interfaces */
+    }
+}
+
+@media (max-width: 576px) {
+    .app-container {
+        padding: 8px 5px;
+    }
+    
+    .tab-content {
+        padding: 12px 10px;
+        border-radius: 8px;
+    }
+    
+    .auth-body {
+        padding: 15px 10px;
+    }
+    
+    .logo::before, #viewer-title::before, .auth-header h2::before {
+        display: none;
+    }
+    
+    .board-controls, .viewer-controls {
+        flex-wrap: wrap;
+    }
+    
+    .lesson-card h3 {
+        font-size: 1rem;
+    }
+    
+    .moves-table th, .moves-table td {
+        padding: 6px 4px;
+        font-size: 0.8rem;
+    }
+    
+    .step-editor, .steps-list, .lesson-details, .full-lesson-text {
+        margin-bottom: 20px;
+    }
+    
+    .btn {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+    }
+    
+    .rich-text-controls {
+        flex-wrap: wrap;
+    }
+    
+    .lesson-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    #lesson-title {
+        width: 100%;
+    }
+    
+    .nav-tabs {
+        justify-content: space-between;
+        width: 100%;
+    }
+    
+    .navbar .logo {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 5px;
+    }
+    
+    .user-menu {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 5px;
+    }
+}
+
+/* تحسين تجربة اللمس على الأجهزة اللمسية */
+.touch-device button, .touch-device .lesson-card, .touch-device .tab-btn {
+    transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.touch-device button.touch-active, .touch-device .tab-btn.touch-active {
+    transform: scale(0.97);
+    opacity: 0.9;
+}
+
+.touch-device .lesson-card.touch-active {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* منع تحديد النص أثناء التفاعلات اللمسية */
+.touch-device .chess-board *, 
+.touch-device .btn,
+.touch-device .tab-btn,
+.touch-device .lesson-card {
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* تحسينات لوضع الشاشة الأفقي على الأجهزة اللمسية */
+@media (max-width: 992px) and (orientation: landscape) {
+    .chess-board {
+        max-height: 80vh;
+        max-width: 35%;
+        margin: 0 auto;
+    }
+    
+    .editor-container, .viewer-content {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+    
+    .left-panel {
+        width: 40%;
+    }
+    
+    .right-panel {
+        width: 60%;
+    }
+}
+
+/* تعزيز الوصولية */
+.btn, .tab-btn, input, textarea, [contenteditable="true"] {
+    touch-action: manipulation;
+}
+
+/* ===== تنسيقات إضافية ===== */
+h2 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+h3 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.lesson-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.move-notation {
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #666;
+}
+
+.icon-btn:hover {
+    color: var(--primary-color);
+}
+
+/* ===== محرر النص الغني ===== */
+.rich-text {
+    min-height: 250px;
+    padding: 20px;
+    line-height: 1.8;
+    text-align: right;
+    overflow-y: auto;
+    background-color: white;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: border-color var(--transition-fast);
+}
+
+.rich-text:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb), 0.15),
+                inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.rich-text-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.move-marker {
+    background-color: var(--highlight);
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    color: var(--primary-color);
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: all var(--transition-fast);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.move-marker.active {
+    background-color: var(--accent-color);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(var(--accent-color-rgb), 0.3);
+}
+
+.move-marker:hover {
+    text-decoration: underline;
+    background-color: #FFF59D;
+    transform: translateY(-1px);
+}
+
+.move-marker[data-step-index]:after {
+    content: attr(data-step-index);
+    position: absolute;
+    top: -8px;
+    left: -5px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+}
+
+.selection-display {
+    background-color: #f0f0f0;
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    font-style: italic;
+}
+
+/* ===== عرض النص الكامل ===== */
+.full-text-display {
+    margin-bottom: 20px;
+    line-height: 1.8;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    position: relative;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) #f0f0f0;
+}
+
+.full-text-display::-webkit-scrollbar {
+    width: 8px;
+}
+
+.full-text-display::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 4px;
+}
+
+.full-text-display::-webkit-scrollbar-thumb {
+    background-color: var(--primary-color);
+    border-radius: 4px;
+}
+
+.full-text-display::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background: linear-gradient(transparent, #f9f9f9);
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.scroll-indicator {
+    color: var(--primary-color);
+    font-size: 0.85rem;
+    text-align: center;
+    margin: -15px 0 15px 0;
+    padding-bottom: 10px;
+    opacity: 0.7;
+    position: relative;
+    display: none; /* Hidden by default, will be shown via JS when content is scrollable */
+}
+
+.scroll-indicator::before {
+    content: '↓';
+    display: inline-block;
+    margin-left: 5px;
+    animation: bounce 1.5s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(3px); }
+}
+
+.step-editor {
+    margin-top: 20px;
+}
+
+/* ===== الخطوات الوهمية ===== */
+.step-type-selection {
+    margin: 10px 0;
+    padding: 8px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    position: relative;
+}
+
+.step-type-selection label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.step-type-selection input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+}
+
+.tooltip {
+    display: none;
+    position: absolute;
+    background-color: #333;
+    color: white;
+    border-radius: 4px;
+    padding: 8px;
+    max-width: 250px;
+    z-index: 10;
+    top: -50px;
+    right: 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.step-type-selection:hover .tooltip {
+    display: block;
+}
+
+.step-item.phantom {
+    border-right: 3px solid var(--secondary-color);
+    background-color: rgba(230, 57, 70, 0.05);
+}
+
+.step-item.phantom .step-content strong:before {
+    content: "★ ";
+    color: var(--secondary-color);
+}
+
+.move-marker.phantom {
+    background-color: rgba(230, 57, 70, 0.2);
+    border-bottom: 1px dashed var(--secondary-color);
+}
+
+.viewer-step-item.phantom {
+    border-right: 3px solid var(--secondary-color);
+    background-color: rgba(230, 57, 70, 0.05);
+}
+
+.viewer-step-item.phantom .step-content strong:before {
+    content: "★ ";
+    color: var(--secondary-color);
+}
+
+.phantom-indicator {
+    font-size: 0.8rem;
+    color: var(--secondary-color);
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.phantom-indicator:before {
+    content: '★';
+    font-size: 1rem;
+}
+
+/* تنسيق الخطوات الوهمية على مستوى الخلية */
+.moves-table td.phantom {
+    background-color: rgba(230, 57, 70, 0.15);
+    border-right: 2px solid var(--secondary-color);
+    color: var(--secondary-color);
+    position: relative;
+}
+
+.moves-table td.phantom::before {
+    content: "★";
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--secondary-color);
+    font-size: 0.8rem;
+}
+
+/* إزالة تنسيق الخطوات الوهمية على مستوى الصف كاملاً */
+.moves-table tr.phantom .white-move,
+.moves-table tr.phantom .black-move {
+    border-right: none;
+}
+
+.moves-table tr.phantom .move-number::before {
+    content: none;
+}
+
+/* تنسيق تلميح للخطوات الوهمية */
+.phantom-hint {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.viewer-step-item.phantom:hover .phantom-hint {
+    opacity: 1;
+}
+
+/* ===== تفاصيل الدرس ===== */
+.lesson-header {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.lesson-header .form-input {
+    flex-grow: 1;
+}
+
+#new-lesson-btn {
+    white-space: nowrap;
+}
+
+/* ===== جدول الخطوات ===== */
+.moves-table-container {
+    max-height: 350px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: var(--shadow-sm);
+    background-color: #FAFBFC;
+}
+
+.moves-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #2C3E50;
+    color: #fff;
+    font-family: 'Roboto Mono', monospace, 'Tajawal', sans-serif;
+}
+
+.moves-table thead {
+    background-color: #1a2a3a;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.moves-table th {
+    padding: 12px 15px;
+    text-align: center;
+    font-weight: 600;
+    border-bottom: 1px solid #34495e;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.moves-table td {
+    padding: 10px 12px;
+    text-align: center;
+    border-bottom: 1px solid #34495e;
+    transition: background-color var(--transition-fast);
+    position: relative;
+    font-size: 1rem;
+}
+
+.moves-table tr:hover {
+    background-color: #34495e;
+}
+
+.moves-table td.move-number {
+    width: 40px;
+    color: #bdc3c7;
+    font-weight: 600;
+}
+
+.moves-table td.white-move, 
+.moves-table td.black-move {
+    width: calc((100% - 120px) / 2);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.moves-table td.actions {
+    width: 80px;
+}
+
+.moves-table td.white-move {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.moves-table td.black-move {
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+.moves-table tr.active,
+.moves-table td.active {
+    background-color: rgba(74, 144, 226, 0.2);
+}
+
+.moves-table td.active {
+    color: #f1c40f;
+    font-weight: 700;
+    position: relative;
+}
+
+.moves-table td.active::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: #f1c40f;
+}
+
+.moves-table tr.phantom .white-move,
+.moves-table tr.phantom .black-move {
+    color: var(--secondary-color);
+    border-right: 2px solid var(--secondary-color);
+}
+
+.moves-table tr.phantom .move-number::before {
+    content: "★";
+    color: var(--secondary-color);
+    margin-right: 3px;
+}
+
+.delete-move-btn, .edit-move-btn {
+    background: none;
+    border: none;
+    color: #95a5a6;
+    cursor: pointer;
+    padding: 2px 8px;
+    transition: color var(--transition-fast);
+    border-radius: 4px;
+}
+
+.delete-move-btn:hover {
+    color: var(--error-color);
+    background-color: rgba(231, 76, 60, 0.1);
+}
+
+.edit-move-btn:hover {
+    color: var(--accent-color);
+    background-color: rgba(74, 144, 226, 0.1);
+}
+
+/* ترتيب الأزرار في خلية الإجراءات */
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* ترتيب الجدول من اليمين لليسار */
+.moves-table th:first-child,
+.moves-table td:first-child {
+    border-right: none;
+}
+
+.moves-table th:last-child,
+.moves-table td:last-child {
+    border-left: none;
+}
+
+#viewer-steps-table tr {
+    cursor: pointer;
+}
+
+/* ===== قسم المصادقة وتسجيل الدخول ===== */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--light-bg);
+    background-image: 
+        linear-gradient(135deg, rgba(30, 58, 95, 0.9) 0%, rgba(30, 58, 95, 0.8) 100%),
+        url('https://images.unsplash.com/photo-1580541832626-2a7131ee809f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2089&q=80');
+    background-size: cover;
+    background-position: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 480px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+    animation: slideUp 0.6s ease-out;
+    margin: 0 auto;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.auth-header {
+    background: linear-gradient(135deg, var(--primary-color), #2d4f7c);
+    color: white;
+    padding: 25px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-header::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(to right, var(--secondary-color), var(--accent-color));
+}
+
+.auth-header h2 {
+    margin: 0 0 15px 0;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.auth-header h2::before {
+    content: "♚";
+    font-size: 2.2rem;
+}
+
+.auth-header h3 {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+.auth-body {
+    padding: 35px;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.auth-note {
+    background-color: #f8f9fa;
+    border-right: 4px solid var(--primary-color);
+    padding: 15px;
+    margin: 20px 0;
+    font-size: 0.95rem;
+    color: var(--dark-text);
+    border-radius: 4px;
+}
+
+.auth-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 25px;
+    justify-content: center;
+}
+
+.auth-actions .btn {
+    min-width: 160px;
+    font-weight: 600;
+    padding: 12px 25px;
+}
+
+#signup-btn {
+    background: linear-gradient(135deg, var(--success-color), #2d7c4b);
+    color: white;
+    width: 100%;
+    margin-top: 15px;
+    box-shadow: 0 4px 6px rgba(45, 124, 75, 0.2);
+}
+
+#signup-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(45, 124, 75, 0.3);
+}
+
+.auth-message {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: 600;
+    display: none;
+}
+
+.auth-message.error {
+    background-color: #FDEDED;
+    color: #CF3636;
+    border: 1px solid #F5C2C2;
+    display: block;
+}
+
+.auth-message.success {
+    background-color: #E9F7EF;
+    color: #27AE60;
+    border: 1px solid #A9DFBF;
+    display: block;
+}
+
+/* For mobile devices */
+@media (max-width: 768px) {
+    .auth-card {
+        max-width: 90%;
+        margin: 0 20px;
+    }
+}
+
+/* إضافة أنماط لقائمة المستخدم */
+.user-menu {
+    margin-right: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#user-info {
+    color: white;
+    font-weight: 500;
+}
+
+.btn.small {
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+/* أنماط لوحة تحكم المسؤول */
+.admin-controls {
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.admin-controls h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.admin-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* أضف هذه الأنماط للأزرار الجديدة */
+.lesson-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* تصميم متجاوب للشاشات الصغيرة */
+@media (max-width: 768px) {
+    .auth-box {
+        padding: 20px;
+        margin: 0 15px;
+    }
+    
+    .auth-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .lesson-actions {
+        flex-direction: column;
+    }
+}
+
+/* Mobile Enhancements */
+@media (max-width: 768px) {
+    .main-container {
+        padding: 10px;
+    }
+    
+    .chess-controls {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .chess-board {
+        width: 100% !important;
+        max-width: 90vmin;
+        height: auto !important;
+        margin: 0 auto;
+    }
+    
+    .lesson-container {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .lesson-steps {
+        max-height: 40vh;
+        overflow-y: auto;
+    }
+    
+    .user-controls {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    button {
+        min-height: 44px; /* Larger touch targets */
+        padding: 10px 15px;
+    }
+    
+    .dialog-content {
+        width: 90%;
+        max-width: 90%;
+    }
+    
+    .tab-container {
+        overflow-x: auto;
+    }
+    
+    /* Active touch state for better feedback */
+    .touch-device button.touch-active {
+        transform: scale(0.97);
+        opacity: 0.9;
+        transition: transform 0.1s ease-in-out, opacity 0.1s ease-in-out;
+    }
+    
+    /* Prevent text selection during touch interactions */
+    .chess-board * {
+        user-select: none;
+        -webkit-user-select: none;
+    }
+    
+    /* Orientation change handling */
+    @media (orientation: landscape) {
+        .lesson-container {
+            flex-direction: row;
+        }
+        
+        .lesson-steps {
+            max-height: 80vh;
+            width: 40%;
+        }
+    }
+}
+
+/* Touch-specific styles */
+.touch-device {
+    /* Prevent gray highlight/flash on tap for clickable elements */
+    -webkit-tap-highlight-color: transparent;
+    /* Prevent text selection during touch interactions */
+    -webkit-touch-callout: none;
+    user-select: none;
+}
+
+.touch-device button,
+.touch-device .tab-btn,
+.touch-device .lesson-card,
+.touch-device .move-btn {
+    /* Improve touch targets for better accessibility */
+    min-height: 44px;
+    min-width: 44px;
+}
+
+/* Visual feedback for touch interactions */
+.touch-active {
+    transform: scale(0.97);
+    transition: transform 0.1s ease-in-out;
+    opacity: 0.9;
+}
+
+/* Orientation-specific adjustments */
+.touch-device.landscape-mode .chess-board {
+    max-height: 80vh;
+    width: auto;
+}
+
+.touch-device.portrait-mode .chess-board {
+    max-width: 95vw;
+    height: auto;
+}
+
+.touch-device .rich-text,
+.touch-device .moves-table,
+.touch-device .full-lesson-text {
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    overflow-y: auto;
+}
+
+@media (hover: none) and (pointer: coarse) {
+    /* Styles for touch-only devices with no hover capability */
+    .dropdown-menu {
+        padding: 12px 8px;
+    }
+    
+    .dropdown-item {
+        padding: 12px 16px;
+        margin-bottom: 4px;
+    }
+    
+    /* Increase spacing for radio buttons and checkboxes */
+    input[type="radio"],
+    input[type="checkbox"] {
+        transform: scale(1.2);
+        margin-right: 8px;
+    }
+    
+    /* Improve form field touch targets */
+    input, select, textarea {
+        font-size: 16px; /* Prevent iOS zoom on focus */
+        padding: 10px 12px;
+    }
+} 
